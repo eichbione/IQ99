@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IQ99.App/IQ99.App.csproj" />
+    <Project Path="src/IQ99.Core/IQ99.Core.csproj" />
+  </Folder>
+</Solution>
