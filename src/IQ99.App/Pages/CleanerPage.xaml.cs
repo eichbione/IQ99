@@ -14,10 +14,12 @@ public partial class CleanerPage : Page
     private readonly ObservableCollection<CleanItem> _cleanItems = [];
     private bool _scanned;
     private bool _isBusy;
+    private List<CleanRecord> _history = [];
 
     public CleanerPage()
     {
         InitializeComponent();
+        RefreshHistory();
         Loaded += async (_, _) =>
         {
             if (!_scanned)
@@ -117,17 +119,20 @@ public partial class CleanerPage : Page
 
         _isBusy = true;
         SetCleanButtonsEnabled(false);
-        CleanProgress.IsIndeterminate = true;
+        CleanProgress.Minimum = 0;
+        CleanProgress.Maximum = selected.Count;
+        CleanProgress.Value = 0;
 
+        var freedBytes = 0L;
         var removedTotal = 0;
-        var total = selected.Count;
         var done = 0;
         try
         {
             foreach (var item in selected)
             {
-                SetCleanStatus($"Limpiando ({done + 1}/{total}): {item.Name}...");
+                SetCleanStatus($"Limpiando ({done + 1}/{selected.Count}): {item.Name}...");
                 AppLog.Write($"Limpiando: {item.Id}");
+                freedBytes += item.SizeBytes;
                 if (item.Id == "recyclebin")
                 {
                     await Task.Run(RecycleBin.EmptyAll);
@@ -138,13 +143,17 @@ public partial class CleanerPage : Page
                 }
 
                 done++;
+                CleanProgress.Value = done;
             }
 
             CleanListView.Items.Refresh();
             SetCleanStatus("Limpieza completada");
-            UiBus.SetStatus($"Limpieza completada. Se eliminaron {removedTotal} archivos/carpetas.");
-            UiBus.ShowSnackbar("Limpieza completada", $"Se eliminaron {removedTotal} archivos o carpetas.");
-            AppLog.Write($"Limpieza completada: {removedTotal} elementos");
+            UiBus.SetStatus($"Limpieza completada. Se liberaron {Formatter.FormatBytes(freedBytes)}.");
+            AppLog.Write($"Limpieza completada: {freedBytes} bytes, {removedTotal} elementos");
+
+            CleanHistory.Add(new CleanRecord(DateTime.Now, freedBytes, removedTotal));
+            RefreshHistory();
+            await ShowCleanDoneAsync(freedBytes, removedTotal);
         }
         catch (Exception ex)
         {
@@ -158,6 +167,52 @@ public partial class CleanerPage : Page
             SetCleanButtonsEnabled(true);
             _isBusy = false;
         }
+    }
+
+    private async Task ShowCleanDoneAsync(long freedBytes, int removedTotal)
+    {
+        TxtDoneCount.Text = $"{removedTotal} archivos o carpetas eliminados";
+
+        CleanDoneOverlay.Visibility = Visibility.Visible;
+        TxtDoneBytes.Text = Formatter.FormatBytes(0);
+
+        var steps = 45;
+        for (var i = 1; i <= steps; i++)
+        {
+            var current = (long)(freedBytes * i / (double)steps);
+            TxtDoneBytes.Text = Formatter.FormatBytes(current);
+            await Task.Delay(18);
+        }
+
+        TxtDoneBytes.Text = Formatter.FormatBytes(freedBytes);
+        UiBus.ShowSnackbar("Limpieza completada", $"Se liberaron {Formatter.FormatBytes(freedBytes)}.");
+    }
+
+    private void BtnDoneClose_Click(object sender, RoutedEventArgs e)
+    {
+        CleanDoneOverlay.Visibility = Visibility.Collapsed;
+    }
+
+    private void CleanDoneOverlay_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        CleanDoneOverlay.Visibility = Visibility.Collapsed;
+    }
+
+    private void BtnClearHistory_Click(object sender, RoutedEventArgs e)
+    {
+        CleanHistory.Clear();
+        RefreshHistory();
+        UiBus.ShowSnackbar("Historial borrado", "El registro de limpiezas quedó vacío.");
+    }
+
+    private void RefreshHistory()
+    {
+        _history = CleanHistory.Load();
+        HistoryList.ItemsSource = _history;
+
+        var hasHistory = _history.Count > 0;
+        HistoryList.Visibility = hasHistory ? Visibility.Visible : Visibility.Collapsed;
+        TxtHistoryEmpty.Visibility = hasHistory ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void BtnSelectAll_Click(object sender, RoutedEventArgs e)

@@ -8,6 +8,9 @@ public sealed class CleanItem
     public required string[] Paths { get; init; }
     public bool IsSelected { get; set; } = true;
     public bool RequiresAdmin { get; init; }
+    public string IconKey { get; init; } = "";
+    public string TintHex { get; init; } = "#5B5F66";
+    public string CloseNotice { get; init; } = "";
     public long SizeBytes { get; private set; }
     public string SizeText => Formatter.FormatBytes(SizeBytes);
 

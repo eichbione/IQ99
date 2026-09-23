@@ -10,6 +10,9 @@
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+            <local:StringToSymbolConverter x:Key="SymbolConv" />
+            <local:HexToBrushConverter x:Key="BrushConv" />
+            <local:BytesConverter x:Key="BytesConv" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
