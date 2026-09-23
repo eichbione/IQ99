@@ -11,6 +11,6 @@ public partial class MainWindow : FluentWindow
         InitializeComponent();
         UiBus.StatusChanged += message => Dispatcher.Invoke(() => TxtStatus.Text = message);
         UiBus.SetStatus("Listo.");
-        NavView.Navigate(typeof(CleanerPage));
+        Loaded += (_, _) => NavView.Navigate(typeof(CleanerPage));
     }
 }
