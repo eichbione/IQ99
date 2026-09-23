@@ -57,6 +57,7 @@ public partial class StoragePage : Page
 
         var total = results.Sum(r => r.SizeBytes);
         UiBus.SetStatus($"Análisis completado: {Formatter.FormatBytes(total)} en carpetas principales.");
+        UiBus.ShowSnackbar("Análisis de disco", $"{Formatter.FormatBytes(total)} en las carpetas principales de {root}.");
     }
 
     private void BtnEmptyBin_Click(object sender, RoutedEventArgs e)
@@ -71,6 +72,7 @@ public partial class StoragePage : Page
         {
             RecycleBin.EmptyAll();
             UiBus.SetStatus("Papelera de reciclaje vaciada.");
+            UiBus.ShowSnackbar("Papelera vaciada", "Se liberó el espacio de la papelera de reciclaje.");
         }
     }
 

@@ -8,6 +8,7 @@
                  xmlns:local="clr-namespace:IQ99.App"
                  mc:Ignorable="d"
                  Title="IQ99" Height="680" Width="1000"
+                 Icon="pack://application:,,,/Resources/icon.ico"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
                  WindowStartupLocation="CenterScreen">
@@ -18,15 +19,21 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="IQ99" />
+        <ui:TitleBar Grid.Row="0"
+                     Title="IQ99"
+                     Icon="pack://application:,,,/Resources/logo.png"
+                     ShowMaximize="True" />
 
         <ui:NavigationView Grid.Row="1" x:Name="NavView"
                            PaneTitle="IQ99"
-                           OpenPaneLength="210"
+                           OpenPaneLength="220"
                            PaneDisplayMode="Left"
                            IsBackButtonVisible="Collapsed"
                            IsPaneToggleVisible="False">
             <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="Inicio"
+                                       Icon="{ui:SymbolIcon Home24}"
+                                       TargetPageType="{x:Type pages:DashboardPage}" />
                 <ui:NavigationViewItem Content="Limpiador"
                                        Icon="{ui:SymbolIcon Delete24}"
                                        TargetPageType="{x:Type pages:CleanerPage}" />
@@ -39,6 +46,46 @@
         <Border Grid.Row="2" Margin="12,4,12,12" CornerRadius="8" Padding="14,10"
                 Background="{ui:ThemeResource ControlFillColorSecondaryBrush}">
             <TextBlock x:Name="TxtStatus" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" FontSize="12" />
+        </Border>
+
+        <Border x:Name="Toast"
+                Grid.RowSpan="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,24,64"
+                Width="380"
+                CornerRadius="10"
+                Padding="16,12"
+                Visibility="Collapsed"
+                RenderTransformOrigin="0.5,0.5"
+                Background="{ui:ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="1">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.45" Color="Black" />
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="18" VerticalAlignment="Top"
+                      Background="{ui:ThemeResource SystemAccentColorPrimaryBrush}">
+                    <ui:SymbolIcon x:Name="ToastIcon" Symbol="CheckmarkCircle24" FontSize="18"
+                                   Foreground="{ui:ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="12,0,8,0" VerticalAlignment="Center">
+                    <TextBlock x:Name="ToastTitle" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis" />
+                    <TextBlock x:Name="ToastMessage" FontSize="12" TextWrapping="Wrap" MaxHeight="48"
+                               Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+                <Button Grid.Column="2" Click="BtnToastClose_Click"
+                        VerticalAlignment="Top" Width="26" Height="26" Padding="0"
+                        Background="Transparent" BorderThickness="0">
+                    <ui:SymbolIcon Symbol="Dismiss24" FontSize="14" />
+                </Button>
+            </Grid>
         </Border>
     </Grid>
 </ui:FluentWindow>

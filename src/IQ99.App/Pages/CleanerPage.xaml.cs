@@ -59,6 +59,7 @@ public partial class CleanerPage : Page
         var totalBytes = _cleanItems.Sum(i => i.SizeBytes);
         SetCleanStatus("Análisis completado");
         UiBus.SetStatus($"Análisis completado. Espacio recuperable: {Formatter.FormatBytes(totalBytes)}");
+        UiBus.ShowSnackbar("Análisis completado", $"Se encontró {Formatter.FormatBytes(totalBytes)} de espacio recuperable.");
     }
 
     private async void BtnClean_Click(object sender, RoutedEventArgs e)
@@ -114,6 +115,7 @@ public partial class CleanerPage : Page
         CleanProgress.Value = 100;
         SetCleanStatus("Limpieza completada");
         UiBus.SetStatus($"Limpieza completada. Se eliminaron {removedTotal} archivos/carpetas.");
+        UiBus.ShowSnackbar("Limpieza completada", $"Se eliminaron {removedTotal} archivos o carpetas. Tu equipo va más ligero.");
     }
 
     private void BtnSelectAll_Click(object sender, RoutedEventArgs e)
