@@ -11,8 +11,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
     <AssemblyTitle>IQ99</AssemblyTitle>
     <Version>0.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\icon.ico" />
+    <Resource Include="Resources\icon.png" />
+  </ItemGroup>
 
 </Project>

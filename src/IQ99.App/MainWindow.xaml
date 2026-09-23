@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:IQ99.App"
         mc:Ignorable="d"
         Title="IQ99" Height="620" Width="940"
-        WindowStartupLocation="CenterScreen" Background="#F5F6F8">
+        WindowStartupLocation="CenterScreen" Background="#F5F6F8"
+        Icon="Resources/icon.ico">
     <Grid Margin="18">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -20,9 +21,14 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="IQ99" FontSize="28" FontWeight="Bold" Foreground="#1F2937" />
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Resources/icon.png" Width="42" Height="42" Stretch="Uniform" />
+                    <TextBlock Text="IQ99" FontSize="28" FontWeight="Bold" Foreground="#1F2937"
+                               VerticalAlignment="Center" Margin="10,0,0,0" />
+                </StackPanel>
                 <TextBlock FontSize="12" Foreground="#6B7280"
-                           Text="Limpia la caché, archivos temporales y analiza el espacio de tu disco." Margin="0,2,0,0" />
+                           Text="Limpia la caché, archivos temporales y analiza el espacio de tu disco."
+                           Margin="0,4,0,0" />
             </StackPanel>
             <Border Grid.Column="1" Background="#FEF3C7" CornerRadius="6" Padding="12,6" VerticalAlignment="Top">
                 <TextBlock Foreground="#92400E" FontSize="12">
