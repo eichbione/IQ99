@@ -48,15 +48,24 @@ public partial class StoragePage : Page
 
         SetFolderButtonsEnabled(false);
         FolderProgress.IsIndeterminate = true;
+        TxtDriveStatus.Text = $"Analizando {root}... esto puede tardar unos minutos.";
         UiBus.SetStatus($"Analizando {root}... esto puede tardar unos minutos.");
 
         var results = await Task.Run(() => StorageAnalyzer.Analyze(root));
 
-        FolderListView.ItemsSource = results.Take(80).ToList();
+        results = results.OrderByDescending(r => r.SizeBytes).ToList();
+        var max = results.Count > 0 ? results[0].SizeBytes : 1;
+        foreach (var r in results)
+        {
+            r.Percent = r.SizeBytes * 100.0 / max;
+        }
+
+        FolderList.ItemsSource = results.Take(60).ToList();
         FolderProgress.IsIndeterminate = false;
         SetFolderButtonsEnabled(true);
 
         var total = results.Sum(r => r.SizeBytes);
+        TxtDriveStatus.Text = $"{Formatter.FormatBytes(total)} en las carpetas principales.";
         UiBus.SetStatus($"Análisis completado: {Formatter.FormatBytes(total)} en carpetas principales.");
         UiBus.ShowSnackbar("Análisis de disco", $"{Formatter.FormatBytes(total)} en las carpetas principales de {root}.");
     }

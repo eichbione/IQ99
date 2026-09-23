@@ -7,7 +7,8 @@
                  xmlns:pages="clr-namespace:IQ99.App.Pages"
                  xmlns:local="clr-namespace:IQ99.App"
                  mc:Ignorable="d"
-                 Title="IQ99" Height="680" Width="1000"
+                 Title="IQ99" Height="720" Width="1040"
+                 MinWidth="880" MinHeight="620"
                  Icon="pack://application:,,,/Resources/icon.ico"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
@@ -43,48 +44,57 @@
             </ui:NavigationView.MenuItems>
         </ui:NavigationView>
 
-        <Border Grid.Row="2" Margin="12,4,12,12" CornerRadius="8" Padding="14,10"
+        <Border Grid.Row="2" Margin="12,4,12,10" CornerRadius="8" Padding="14,8"
+                VerticalAlignment="Center"
                 Background="{ui:ThemeResource ControlFillColorSecondaryBrush}">
-            <TextBlock x:Name="TxtStatus" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" FontSize="12" />
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:SymbolIcon x:Name="StatusIcon" Symbol="Info24" FontSize="14"
+                               Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                               VerticalAlignment="Center" />
+                <TextBlock x:Name="TxtStatus" Margin="8,0,0,0" FontSize="12" TextTrimming="CharacterEllipsis"
+                           Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
         </Border>
 
         <Border x:Name="Toast"
-                Grid.RowSpan="3"
+                Grid.Row="1"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Margin="0,0,24,64"
-                Width="380"
+                VerticalAlignment="Top"
+                Margin="0,12,16,0"
+                Width="360"
                 CornerRadius="10"
-                Padding="16,12"
+                Padding="0"
                 Visibility="Collapsed"
+                IsHitTestVisible="False"
                 RenderTransformOrigin="0.5,0.5"
-                Background="{ui:ThemeResource CardBackgroundFillColorDefaultBrush}"
+                Background="{ui:ThemeResource SolidBackgroundFillColorSecondaryBrush}"
                 BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}"
                 BorderThickness="1">
             <Border.Effect>
-                <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.45" Color="Black" />
+                <DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.35" Color="Black" />
             </Border.Effect>
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="44" />
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="18" VerticalAlignment="Top"
-                      Background="{ui:ThemeResource SystemAccentColorPrimaryBrush}">
-                    <ui:SymbolIcon x:Name="ToastIcon" Symbol="CheckmarkCircle24" FontSize="18"
-                                   Foreground="{ui:ThemeResource TextOnAccentFillColorPrimaryBrush}" />
+                <Border Grid.Column="0" Background="{ui:ThemeResource SystemAccentColorPrimaryBrush}">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.4" Color="Black" />
+                    </Border.Effect>
                 </Border>
-                <StackPanel Grid.Column="1" Margin="12,0,8,0" VerticalAlignment="Center">
+                <Grid Grid.Column="1" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Border CornerRadius="16" Background="{ui:ThemeResource SubtleFillColorSecondaryBrush}" />
+                    <ui:SymbolIcon x:Name="ToastIcon" Symbol="CheckmarkCircle24" FontSize="18"
+                                   Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}" />
+                </Grid>
+                <StackPanel Grid.Column="2" Margin="0,12,14,12" VerticalAlignment="Center">
                     <TextBlock x:Name="ToastTitle" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis" />
-                    <TextBlock x:Name="ToastMessage" FontSize="12" TextWrapping="Wrap" MaxHeight="48"
+                    <TextBlock x:Name="ToastMessage" FontSize="12" TextWrapping="Wrap" MaxHeight="44"
                                Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
-                <Button Grid.Column="2" Click="BtnToastClose_Click"
-                        VerticalAlignment="Top" Width="26" Height="26" Padding="0"
-                        Background="Transparent" BorderThickness="0">
-                    <ui:SymbolIcon Symbol="Dismiss24" FontSize="14" />
-                </Button>
             </Grid>
         </Border>
     </Grid>

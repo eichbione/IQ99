@@ -19,7 +19,8 @@
                        Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" FontSize="13" Margin="0,4,0,0" />
         </StackPanel>
 
-        <Grid Grid.Row="1">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+            <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="16" />
@@ -127,5 +128,6 @@
                 </StackPanel>
             </ui:Card>
         </Grid>
+    </ScrollViewer>
     </Grid>
 </Page>

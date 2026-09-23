@@ -51,14 +51,18 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <ui:Button x:Name="BtnAnalyze" Content="Analizar" Click="BtnAnalyze_Click" Appearance="Primary" />
-            <ui:Button x:Name="BtnClean" Content="Limpiar seleccionados" Click="BtnClean_Click" Appearance="Danger" Margin="10,0,0,0" />
+            <ui:Button x:Name="BtnAnalyze" Content="Analizar" Click="BtnAnalyze_Click" Appearance="Primary"
+                       MinWidth="110" Height="38" Padding="18,0" />
+            <ui:Button x:Name="BtnClean" Content="Limpiar seleccionados" Click="BtnClean_Click" Appearance="Danger"
+                       MinWidth="140" Height="38" Padding="18,0" HorizontalAlignment="Left"
+                       Margin="10,0,0,0" />
             <TextBlock x:Name="TxtCleanStatus" Grid.Column="2" VerticalAlignment="Center" Margin="14,0,0,0"
-                       Text="Selecciona categorías y pulsa Limpiar." FontSize="12"
+                       Text="Selecciona categorías y pulsa Limpiar." FontSize="12" TextTrimming="CharacterEllipsis"
+                       TextWrapping="NoWrap"
                        Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
-            <StackPanel Grid.Column="3" Orientation="Horizontal">
-                <ui:Button Content="Todo" Click="BtnSelectAll_Click" />
-                <ui:Button Content="Ninguno" Click="BtnSelectNone_Click" Margin="8,0,0,0" />
+            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:Button Content="Todo" Click="BtnSelectAll_Click" MinWidth="70" Height="38" Padding="16,0" />
+                <ui:Button Content="Ninguno" Click="BtnSelectNone_Click" Margin="8,0,0,0" MinWidth="70" Height="38" Padding="16,0" />
             </StackPanel>
         </Grid>
 

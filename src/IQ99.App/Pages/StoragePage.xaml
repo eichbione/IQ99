@@ -13,40 +13,56 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
-            <ComboBox x:Name="DriveCombo" Width="300" />
-            <ui:Button x:Name="BtnScan" Content="Analizar disco" Click="BtnScan_Click" Margin="10,0,0,0" Appearance="Primary" />
-            <ui:Button x:Name="BtnEmptyBin" Content="Vaciar papelera" Click="BtnEmptyBin_Click" Margin="10,0,0,0" />
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="DriveCombo" Width="300" Height="38" VerticalContentAlignment="Center" />
+            <ui:Button x:Name="BtnScan" Content="Analizar disco" Click="BtnScan_Click" Margin="10,0,0,0"
+                       Appearance="Primary" MinWidth="120" Height="38" Padding="16,0" />
+            <ui:Button x:Name="BtnEmptyBin" Content="Vaciar papelera" Click="BtnEmptyBin_Click" Margin="10,0,0,0"
+                       MinWidth="120" Height="38" Padding="16,0" />
+            <TextBlock Grid.Column="3" x:Name="TxtDriveStatus" Margin="14,0,0,0" VerticalAlignment="Center"
+                       FontSize="12" TextTrimming="CharacterEllipsis"
+                       Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
+        </Grid>
 
-        <ListView x:Name="FolderListView" Grid.Row="1">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Carpeta" Width="420">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Tamaño" Width="120">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding SizeText}" TextAlignment="Right" Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Uso relativo" Width="180">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <ProgressBar Value="{Binding Percent}" Maximum="100" Height="14" Width="150" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+            <ItemsControl x:Name="FolderList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,8" CornerRadius="8" Padding="16,12"
+                                Background="{ui:ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}"
+                                BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="110" />
+                                    <ColumnDefinition Width="160" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis"
+                                           FontSize="13" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Text="{Binding SizeText}" TextAlignment="Right"
+                                           FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"
+                                           Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}"
+                                           Margin="8,0,0,0" />
+                                <StackPanel Grid.Column="2" Margin="16,0,0,0" VerticalAlignment="Center">
+                                    <ProgressBar Value="{Binding Percent}" Maximum="100" Height="6" />
+                                    <TextBlock Text="{Binding Percent, StringFormat={}{0:F0} %}" FontSize="10.5"
+                                               HorizontalAlignment="Right" Margin="0,3,0,0"
+                                               Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
-        <ProgressBar x:Name="FolderProgress" Grid.Row="2" Height="4" Margin="0,12,0,0" />
+        <ProgressBar x:Name="FolderProgress" Grid.Row="2" Height="4" Margin="0,8,0,0" />
     </Grid>
 </Page>
