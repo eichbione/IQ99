@@ -43,22 +43,44 @@ public partial class MainWindow : Window
     private async void BtnAnalyze_Click(object sender, RoutedEventArgs e)
     {
         _cleanItems.Clear();
-        foreach (var item in CleanerService.GetDefaultCategories())
+        var items = CleanerService.GetDefaultCategories();
+        foreach (var item in items)
         {
             _cleanItems.Add(item);
         }
 
         CleanListView.ItemsSource = _cleanItems;
-        SetStatus("Analizando carpetas de sistema y navegadores...");
         SetCleanButtonsEnabled(false);
+        CleanProgress.IsIndeterminate = true;
+        SetStatus("Analizando carpetas de sistema y navegadores...");
+        SetCleanStatus("");
 
-        await Task.Run(() => CleanerService.Scan(_cleanItems));
+        var total = items.Count;
+        var completed = 0;
+        try
+        {
+            await Task.WhenAll(items.Select(item => Task.Run(() =>
+            {
+                item.Scan();
+                var done = Interlocked.Increment(ref completed);
+                Dispatcher.Invoke(() =>
+                {
+                    CleanListView.Items.Refresh();
+                    SetCleanStatus($"{done}/{total} categorías analizadas: {item.Name}");
+                });
+            })));
+        }
+        finally
+        {
+            CleanProgress.IsIndeterminate = false;
+            SetCleanButtonsEnabled(true);
+        }
 
-        SetCleanButtonsEnabled(true);
         CleanListView.Items.Refresh();
-
-        var total = _cleanItems.Sum(i => i.SizeBytes);
-        SetStatus($"Análisis completado. Espacio recuperable: {Formatter.FormatBytes(total)}");
+        CleanProgress.Value = 100;
+        var totalBytes = _cleanItems.Sum(i => i.SizeBytes);
+        SetCleanStatus("Análisis completado");
+        SetStatus($"Análisis completado. Espacio recuperable: {Formatter.FormatBytes(totalBytes)}");
     }
 
     private async void BtnClean_Click(object sender, RoutedEventArgs e)
@@ -82,24 +104,58 @@ public partial class MainWindow : Window
         }
 
         SetCleanButtonsEnabled(false);
+        CleanProgress.IsIndeterminate = true;
 
         var removedTotal = 0;
-        foreach (var item in selected)
+        var total = selected.Count;
+        var done = 0;
+        try
         {
-            SetStatus($"Limpiando {item.Name}...");
-            if (item.Id == "recyclebin")
+            foreach (var item in selected)
             {
-                await Task.Run(RecycleBin.EmptyAll);
+                SetCleanStatus($"Limpiando ({done + 1}/{total}): {item.Name}...");
+                if (item.Id == "recyclebin")
+                {
+                    await Task.Run(RecycleBin.EmptyAll);
+                }
+                else
+                {
+                    removedTotal += await Task.Run(item.Clean);
+                }
+
+                done++;
             }
-            else
-            {
-                removedTotal += await Task.Run(item.Clean);
-            }
+        }
+        finally
+        {
+            CleanProgress.IsIndeterminate = false;
+            SetCleanButtonsEnabled(true);
         }
 
         CleanListView.Items.Refresh();
-        SetCleanButtonsEnabled(true);
+        CleanProgress.Value = 100;
+        SetCleanStatus("Limpieza completada");
         SetStatus($"Limpieza completada. Se eliminaron {removedTotal} archivos/carpetas.");
+    }
+
+    private void BtnSelectAll_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var item in _cleanItems)
+        {
+            item.IsSelected = true;
+        }
+
+        CleanListView.Items.Refresh();
+    }
+
+    private void BtnSelectNone_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var item in _cleanItems)
+        {
+            item.IsSelected = false;
+        }
+
+        CleanListView.Items.Refresh();
     }
 
     private async void BtnScan_Click(object sender, RoutedEventArgs e)
@@ -144,6 +200,11 @@ public partial class MainWindow : Window
     {
         BtnAnalyze.IsEnabled = enabled;
         BtnClean.IsEnabled = enabled;
+    }
+
+    private void SetCleanStatus(string message)
+    {
+        TxtCleanStatus.Text = message;
     }
 
     private void SetFolderButtonsEnabled(bool enabled)
