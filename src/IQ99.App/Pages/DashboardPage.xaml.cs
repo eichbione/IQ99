@@ -110,11 +110,13 @@ public partial class DashboardPage : Page
 
     private void BtnCleanNow_Click(object sender, RoutedEventArgs e)
     {
+        AppLog.Write("Click en Limpiar ahora (Inicio)");
         UiBus.RequestNavigate(typeof(CleanerPage));
     }
 
     private void BtnAnalyzeNow_Click(object sender, RoutedEventArgs e)
     {
+        AppLog.Write("Click en Analizar (Inicio)");
         _ = RunScanAsync();
     }
 }

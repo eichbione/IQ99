@@ -38,6 +38,7 @@ public partial class StoragePage : Page
 
     private async void BtnScan_Click(object sender, RoutedEventArgs e)
     {
+        AppLog.Write("Click en Analizar disco");
         var combo = DriveCombo.SelectedItem as ComboBoxItem;
         var root = combo?.Tag as string;
         if (string.IsNullOrEmpty(root))
@@ -62,6 +63,7 @@ public partial class StoragePage : Page
 
     private void BtnEmptyBin_Click(object sender, RoutedEventArgs e)
     {
+        AppLog.Write("Click en Vaciar papelera");
         var confirm = System.Windows.MessageBox.Show(
             "¿Vaciar la papelera de reciclaje? Esta acción no se puede deshacer.",
             "IQ99",

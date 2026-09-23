@@ -14,28 +14,35 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ListView x:Name="CleanListView" Grid.Row="0" SelectionMode="Single">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Limpiar" Width="70">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <CheckBox IsChecked="{Binding IsSelected}" HorizontalAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Categoría" Width="220" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="Descripción" Width="320" DisplayMemberBinding="{Binding Description}" />
-                    <GridViewColumn Header="Tamaño" Width="120">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding SizeText}" TextAlignment="Right" Foreground="{ui:ThemeResource TextFillColorAccentBrush}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" Padding="0,0,8,0">
+            <ItemsControl x:Name="CleanListView">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0,0,0,8" CornerRadius="8" Padding="16,12"
+                                Background="{ui:ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}"
+                                BorderThickness="1">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="36" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center" />
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding Name}" FontSize="13.5" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding Description}" FontSize="11.5"
+                                               Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="{Binding SizeText}" FontSize="13" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
         <Grid Grid.Row="1" Margin="0,14,0,0">
             <Grid.ColumnDefinitions>
@@ -46,7 +53,9 @@
             </Grid.ColumnDefinitions>
             <ui:Button x:Name="BtnAnalyze" Content="Analizar" Click="BtnAnalyze_Click" Appearance="Primary" />
             <ui:Button x:Name="BtnClean" Content="Limpiar seleccionados" Click="BtnClean_Click" Appearance="Danger" Margin="10,0,0,0" />
-            <TextBlock x:Name="TxtCleanStatus" Grid.Column="2" VerticalAlignment="Center" Margin="14,0,0,0" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
+            <TextBlock x:Name="TxtCleanStatus" Grid.Column="2" VerticalAlignment="Center" Margin="14,0,0,0"
+                       Text="Selecciona categorías y pulsa Limpiar." FontSize="12"
+                       Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
             <StackPanel Grid.Column="3" Orientation="Horizontal">
                 <ui:Button Content="Todo" Click="BtnSelectAll_Click" />
                 <ui:Button Content="Ninguno" Click="BtnSelectNone_Click" Margin="8,0,0,0" />

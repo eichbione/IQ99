@@ -32,7 +32,7 @@
                     <GridViewColumn Header="Tamaño" Width="120">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding SizeText}" TextAlignment="Right" Foreground="{ui:ThemeResource TextFillColorAccentBrush}" />
+                                <TextBlock Text="{Binding SizeText}" TextAlignment="Right" Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

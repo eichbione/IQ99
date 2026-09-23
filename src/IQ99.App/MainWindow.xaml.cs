@@ -15,7 +15,11 @@ public partial class MainWindow : FluentWindow
         InitializeComponent();
         UiBus.StatusChanged += message => Dispatcher.Invoke(() => TxtStatus.Text = message);
         UiBus.SnackbarChanged += (title, message) => Dispatcher.Invoke(() => ShowToast(title, message));
-        UiBus.NavigateRequested += pageType => Dispatcher.Invoke(() => NavView.Navigate(pageType));
+        UiBus.NavigateRequested += pageType => Dispatcher.Invoke(() =>
+        {
+            AppLog.Write($"Navegando a {pageType.Name}");
+            NavView.Navigate(pageType);
+        });
         UiBus.SetStatus("Listo.");
         Loaded += (_, _) => NavView.Navigate(typeof(DashboardPage));
     }

@@ -12,14 +12,33 @@ namespace IQ99.App.Pages;
 public partial class CleanerPage : Page
 {
     private readonly ObservableCollection<CleanItem> _cleanItems = [];
+    private bool _scanned;
+    private bool _isBusy;
 
     public CleanerPage()
     {
         InitializeComponent();
+        Loaded += async (_, _) =>
+        {
+            if (!_scanned)
+            {
+                await RunAnalyzeAsync();
+            }
+        };
     }
 
-    private async void BtnAnalyze_Click(object sender, RoutedEventArgs e)
+    private async Task RunAnalyzeAsync()
     {
+        if (_isBusy)
+        {
+            return;
+        }
+
+        _isBusy = true;
+        AppLog.Write("Análisis iniciado");
+        SetCleanButtonsEnabled(false);
+        CleanProgress.IsIndeterminate = true;
+
         _cleanItems.Clear();
         var items = CleanerService.GetDefaultCategories();
         foreach (var item in items)
@@ -28,13 +47,12 @@ public partial class CleanerPage : Page
         }
 
         CleanListView.ItemsSource = _cleanItems;
-        SetCleanButtonsEnabled(false);
-        CleanProgress.IsIndeterminate = true;
+        SetCleanStatus("Analizando carpetas de sistema y navegadores...");
         UiBus.SetStatus("Analizando carpetas de sistema y navegadores...");
-        SetCleanStatus("");
 
         var total = items.Count;
         var completed = 0;
+
         try
         {
             await Task.WhenAll(items.Select(item => Task.Run(() =>
@@ -44,30 +62,45 @@ public partial class CleanerPage : Page
                 Dispatcher.Invoke(() =>
                 {
                     CleanListView.Items.Refresh();
-                    SetCleanStatus($"{done}/{total} categorías analizadas: {item.Name}");
+                    SetCleanStatus($"Analizado {done}/{total}: {item.Name}");
                 });
             })));
+
+            CleanListView.Items.Refresh();
+            var reclaimable = _cleanItems.Sum(i => i.SizeBytes);
+            SetCleanStatus("Análisis completado");
+            UiBus.SetStatus($"Análisis completado. Espacio recuperable: {Formatter.FormatBytes(reclaimable)}");
+            UiBus.ShowSnackbar("Análisis completado", $"Se encontró {Formatter.FormatBytes(reclaimable)} de espacio recuperable.");
+            AppLog.Write($"Análisis completado: {reclaimable} bytes");
+        }
+        catch (Exception ex)
+        {
+            AppLog.Write("Error al analizar", ex);
+            SetCleanStatus("No se pudo completar el análisis.");
         }
         finally
         {
+            _scanned = true;
+            _isBusy = false;
             CleanProgress.IsIndeterminate = false;
+            CleanProgress.Value = 100;
             SetCleanButtonsEnabled(true);
         }
+    }
 
-        CleanListView.Items.Refresh();
-        CleanProgress.Value = 100;
-        var totalBytes = _cleanItems.Sum(i => i.SizeBytes);
-        SetCleanStatus("Análisis completado");
-        UiBus.SetStatus($"Análisis completado. Espacio recuperable: {Formatter.FormatBytes(totalBytes)}");
-        UiBus.ShowSnackbar("Análisis completado", $"Se encontró {Formatter.FormatBytes(totalBytes)} de espacio recuperable.");
+    private async void BtnAnalyze_Click(object sender, RoutedEventArgs e)
+    {
+        AppLog.Write("Click en Analizar");
+        await RunAnalyzeAsync();
     }
 
     private async void BtnClean_Click(object sender, RoutedEventArgs e)
     {
+        AppLog.Write("Click en Limpiar");
         var selected = _cleanItems.Where(i => i.IsSelected).ToList();
         if (selected.Count == 0)
         {
-            UiBus.SetStatus("No hay categorías seleccionadas.");
+            UiBus.ShowSnackbar("Nada que limpiar", "Marca al menos una categoría en la lista.");
             return;
         }
 
@@ -82,6 +115,7 @@ public partial class CleanerPage : Page
             return;
         }
 
+        _isBusy = true;
         SetCleanButtonsEnabled(false);
         CleanProgress.IsIndeterminate = true;
 
@@ -93,6 +127,7 @@ public partial class CleanerPage : Page
             foreach (var item in selected)
             {
                 SetCleanStatus($"Limpiando ({done + 1}/{total}): {item.Name}...");
+                AppLog.Write($"Limpiando: {item.Id}");
                 if (item.Id == "recyclebin")
                 {
                     await Task.Run(RecycleBin.EmptyAll);
@@ -104,18 +139,25 @@ public partial class CleanerPage : Page
 
                 done++;
             }
+
+            CleanListView.Items.Refresh();
+            SetCleanStatus("Limpieza completada");
+            UiBus.SetStatus($"Limpieza completada. Se eliminaron {removedTotal} archivos/carpetas.");
+            UiBus.ShowSnackbar("Limpieza completada", $"Se eliminaron {removedTotal} archivos o carpetas.");
+            AppLog.Write($"Limpieza completada: {removedTotal} elementos");
+        }
+        catch (Exception ex)
+        {
+            AppLog.Write("Error al limpiar", ex);
+            SetCleanStatus("Ocurrió un error durante la limpieza.");
         }
         finally
         {
             CleanProgress.IsIndeterminate = false;
+            CleanProgress.Value = 100;
             SetCleanButtonsEnabled(true);
+            _isBusy = false;
         }
-
-        CleanListView.Items.Refresh();
-        CleanProgress.Value = 100;
-        SetCleanStatus("Limpieza completada");
-        UiBus.SetStatus($"Limpieza completada. Se eliminaron {removedTotal} archivos/carpetas.");
-        UiBus.ShowSnackbar("Limpieza completada", $"Se eliminaron {removedTotal} archivos o carpetas. Tu equipo va más ligero.");
     }
 
     private void BtnSelectAll_Click(object sender, RoutedEventArgs e)
