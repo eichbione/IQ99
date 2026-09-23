@@ -6,7 +6,7 @@
           xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
           mc:Ignorable="d"
           d:DesignWidth="760" d:DesignHeight="560">
-    <Grid Margin="32,20,28,20">
+    <Grid Margin="28,20,28,16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -96,37 +96,54 @@
                 </ui:Card>
             </StackPanel>
 
-            <ui:Card Grid.Column="2" Padding="20" VerticalAlignment="Top">
-                <StackPanel>
-                    <TextBlock Text="Estado rápido" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,14" />
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+            <StackPanel Grid.Column="2">
+                <ui:Card Padding="20" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="Estado rápido" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,14" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,8,12">
-                            <TextBlock Text="Categorías" FontSize="11"
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,8,12">
+                                <TextBlock Text="Categorías" FontSize="11"
+                                           Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock x:Name="TxtCategories" Text="0" FontSize="22" FontWeight="SemiBold" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1">
+                                <TextBlock Text="Con contenido" FontSize="11"
+                                           Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
+                                <TextBlock x:Name="TxtWithContent" Text="0" FontSize="22" FontWeight="SemiBold" />
+                            </StackPanel>
+                            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="Recomendaciones" FontSize="11" Margin="0,4,0,6"
                                        Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
-                            <TextBlock x:Name="TxtCategories" Text="0" FontSize="22" FontWeight="SemiBold" />
+                            <TextBlock x:Name="TxtRecommendation" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                       Text="Analiza para ver recomendaciones."
+                                       FontSize="12.5" TextWrapping="Wrap" />
+                        </Grid>
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card Padding="20" Margin="0,16,0,0" VerticalAlignment="Bottom">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <ui:SymbolIcon Symbol="Info24" FontSize="14" Foreground="{ui:ThemeResource SystemAccentColorPrimaryBrush}"
+                                           VerticalAlignment="Center" />
+                            <TextBlock Text="Consejo del día" FontSize="13" FontWeight="SemiBold"
+                                       Margin="8,0,0,0" VerticalAlignment="Center" />
                         </StackPanel>
-                        <StackPanel Grid.Row="0" Grid.Column="1">
-                            <TextBlock Text="Con contenido" FontSize="11"
-                                       Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
-                            <TextBlock x:Name="TxtWithContent" Text="0" FontSize="22" FontWeight="SemiBold" />
-                        </StackPanel>
-                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="Recomendaciones" FontSize="11" Margin="0,4,0,6"
-                                   Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" />
-                        <TextBlock Grid.Row="1" Grid.RowSpan="1" x:Name="TxtRecommendation"
-                                   Grid.Column="0" Grid.ColumnSpan="2" Text="Analiza para ver recomendaciones."
-                                   FontSize="12.5" TextWrapping="Wrap" />
-                    </Grid>
-                </StackPanel>
-            </ui:Card>
+                        <TextBlock FontSize="12" TextWrapping="Wrap"
+                                   Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}">
+                            Revisa la caché de tu navegador y las carpetas TEMP: es donde más espacio basura se acumula.
+                        </TextBlock>
+                    </StackPanel>
+                </ui:Card>
+            </StackPanel>
         </Grid>
     </ScrollViewer>
     </Grid>

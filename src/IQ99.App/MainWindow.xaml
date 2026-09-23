@@ -26,7 +26,6 @@
                      ShowMaximize="True" />
 
         <ui:NavigationView Grid.Row="1" x:Name="NavView"
-                           PaneTitle="IQ99"
                            OpenPaneLength="220"
                            PaneDisplayMode="Left"
                            IsBackButtonVisible="Collapsed"
